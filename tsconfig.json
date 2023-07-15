@@ -10,7 +10,6 @@
 		"noImplicitAny": true,
 		"moduleResolution": "node",
 		"sourceMap": true,
-		"noEmit": true,
 		"outDir": "dist",
 		"plugins": [
 			{}
