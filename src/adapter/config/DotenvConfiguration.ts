@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 const env = keyblade(process.env);
 
 export const dotenvConfiguration: Configuration = {
-  server: { port: Number(env.SERVER_PORT), environment: env.ENVIRONMENT },
+  server: { port: Number(env.PORT), environment: env.ENVIRONMENT },
   secrets: {
     googleBardCookies: String(env.GOOGLE_BARD_COOKIES),
     openAiKey: String(env.OPENAI_API_KEY),
