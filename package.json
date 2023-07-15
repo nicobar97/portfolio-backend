@@ -2,15 +2,17 @@
 	"name": "nicobar",
 	"version": "1.0.0",
 	"description": "",
-	"main": "dist/index.js",
+	"main": "dist/http/index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "node dist/http/index.js",
 		"dev": "yarn nodemon src/http/index.ts",
 		"build": "tsc"
 	},
 	"author": "Nicobar",
 	"license": "MIT",
+	"engines": {
+		"node": "19.4.0"
+	},
 	"devDependencies": {
 		"@types/node": "18.11.18",
 		"ts-node": "^10.9.1",
