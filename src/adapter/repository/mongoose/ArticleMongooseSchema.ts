@@ -4,7 +4,6 @@ import { ArticlePrompt } from "../../../core/domain/model/Article";
 export type MongooseArticleData = {
   _id: string;
   content: string;
-  formatted_content: string;
   articlePrompt: ArticlePrompt;
   date: Date;
   title: string;
@@ -19,7 +18,6 @@ export const articleSchema: Schema = new mongoose.Schema(
   {
     _id: { type: String, required: true },
     content: { type: String, required: true },
-    formatted_content: { type: String, required: true },
     articlePrompt: {
       type: {
         task: { type: String, required: true },

@@ -109,7 +109,6 @@ const mapMongooseArticleToArticle = (
   tags: mongooseArticle.tags,
   estimatedReadingTimeMinutes: mongooseArticle.estimatedReadingTimeMinutes,
   relatedTopicsTags: mongooseArticle.relatedTopicsTags,
-  formatted_content: mongooseArticle.formatted_content,
   date: mongooseArticle.date,
   articlePrompt: {
     task: mongooseArticle.articlePrompt.task,

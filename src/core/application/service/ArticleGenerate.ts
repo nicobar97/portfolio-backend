@@ -3,6 +3,7 @@ import {
   Article,
   ArticlePrompt,
   RawArticle,
+  SimpleArticle,
   UnsavedArticle,
 } from "../../../core/domain/model/Article";
 import {
@@ -111,16 +112,30 @@ const generateArticle =
       .map((unsavedArticle) => articleRepository.create(unsavedArticle))
       .join();
 
+const mapArticleToSimpleArticle = (
+  article: Article
+): SimpleArticle => ({
+  title: article.title,
+  id: article.id,
+  content: article.content,
+  tags: article.tags,
+  estimatedReadingTimeMinutes: article.estimatedReadingTimeMinutes,
+})
+
 const genereatePromptString = (
   prompt: ArticlePrompt
-): string => `Task: ${prompt.task}
+): string => `
+You are a professional journalist that writes very nice articles.
+I want you yo write me an article about:
+
+Task: ${prompt.task}
 Topic: ${prompt.topic}
 Style: ${prompt.style}
 Tone: ${prompt.tone}
 Audience: ${prompt.audience}
 Length: ${prompt.length}
-Format: JSON (Dont add newlines)
-Schema (Make sure to match it):
+Format: JSON
+JSON Schema (Make sure to match this format):
 {
     title: string;
     tags: string[];

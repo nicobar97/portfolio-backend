@@ -1,7 +1,6 @@
 
 export type UnsavedArticle = {
   content: string;
-  formatted_content: string;
   articlePrompt: ArticlePrompt
   date: Date;
   title: string;
@@ -21,6 +20,14 @@ export type RawArticle = {
 
 export type Article = UnsavedArticle & {
   id: string
+}
+
+export type SimpleArticle = {
+  title: string;
+  id: string
+  content: string
+  tags: string[]
+  estimatedReadingTimeMinutes: number
 }
 
 export type ArticlePrompt = {

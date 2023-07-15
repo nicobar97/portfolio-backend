@@ -58,7 +58,7 @@ const createRawArticle =
     prompt: ArticlePrompt
   ): Either<CreateRawArticleError, RawArticle> =>
     extractResponse(rawResponse)
-      .map((extractResponse) => cleanResponse(extractResponse, prompt))
+      .map((extractResponse) => cleanResponse(extractResponse))
       .join()
       .map((cleanResponse) => mapToRawArticle(cleanResponse, prompt))
       .join();
@@ -86,7 +86,6 @@ const extractResponse = (
 
 const cleanResponse = (
   extractResponse: string,
-  prompt: ArticlePrompt
 ): Either<CleanResponseError, string> => {
   try {
     let cleanedResponse = "";
@@ -100,7 +99,7 @@ const cleanResponse = (
       }
     }
     cleanedResponse = cleanedResponse.slice(0, cleanedResponse.length - 1);
-    return Right(cleanedResponse);
+    return Right(extractResponse);
   } catch (e) {
     return Left({
       type: "clean_response_error",
