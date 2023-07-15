@@ -19,6 +19,7 @@ import {
 import {
   ArticleRepository,
   CreateArticleError,
+  FindArticleByIdError,
   FindManyArticlesError,
 } from "../../port/ArticleRepository";
 
@@ -31,6 +32,7 @@ export type GenerateArticleError =
   | CreateArticleError;
 
 export type GetArticlesError = FindManyArticlesError;
+export type GetArticleError = FindArticleByIdError;
 
 export type GenerateUnsavedArticle = (
   prompt: ArticlePrompt
@@ -41,20 +43,23 @@ export type GenerateArticle = (
 ) => Promise<Either<GenerateArticleError, Article>>;
 
 export type GetManysArticles = () => Promise<
-  Either<GetArticlesError, Article[]>
+  Either<GetArticlesError, SimpleArticle[]>
 >;
 
-export type GenerateArticleService = {
+export type GetArticle = (id: string) => Promise<Either<GetArticleError, Article>>;
+
+export type ArticleService = {
   generateUnsavedArticle: GenerateUnsavedArticle;
   generateArticle: GenerateArticle;
   getManyArticles: GetManysArticles;
+  getArticle: GetArticle;
 };
 
-export const articleGenerateServiceFactory = (
+export const articleServiceFactory = (
   articleCreationService: ArticleCreationService,
   articleGeneratingAiService: GenerativeAiService,
   articleRepository: ArticleRepository
-): GenerateArticleService => ({
+): ArticleService => ({
   generateUnsavedArticle: generateUnsavedArticle(
     articleCreationService,
     articleGeneratingAiService
@@ -65,6 +70,7 @@ export const articleGenerateServiceFactory = (
     articleRepository
   ),
   getManyArticles: getManyArticles(articleRepository),
+  getArticle: getArticle(articleRepository),
 });
 
 const generateUnsavedArticle =
@@ -89,9 +95,18 @@ const generateUnsavedArticle =
 
 const getManyArticles =
   (articleRepository: ArticleRepository) =>
-  async (): Promise<Either<GetArticlesError, Article[]>> =>
+  async (): Promise<Either<GetArticlesError, SimpleArticle[]>> =>
     EitherAsync.fromPromise<GetArticlesError, Article[]>(() =>
       articleRepository.findMany()
+    ).map((articles) =>
+      articles.map((article) => mapArticleToSimpleArticle(article))
+    );
+
+const getArticle =
+  (articleRepository: ArticleRepository) =>
+  async (id: string): Promise<Either<GetArticleError, Article>> =>
+    EitherAsync.fromPromise<GetArticleError, Article>(() =>
+      articleRepository.findById(id)
     );
 
 const generateArticle =
@@ -112,19 +127,20 @@ const generateArticle =
       .map((unsavedArticle) => articleRepository.create(unsavedArticle))
       .join();
 
-const mapArticleToSimpleArticle = (
-  article: Article
-): SimpleArticle => ({
+const mapArticleToSimpleArticle = (article: Article): SimpleArticle => ({
   title: article.title,
   id: article.id,
-  content: article.content,
+  content: getFirstParagraph(article.content),
   tags: article.tags,
   estimatedReadingTimeMinutes: article.estimatedReadingTimeMinutes,
-})
+});
 
-const genereatePromptString = (
-  prompt: ArticlePrompt
-): string => `
+const getFirstParagraph = (content: string): string =>
+  content.split("\n\n").length > 1
+    ? content.split("\n\n")[1]
+    : content.substring(0, 200);
+
+const genereatePromptString = (prompt: ArticlePrompt): string => `
 You are a professional journalist that writes very nice articles.
 I want you yo write me an article about:
 

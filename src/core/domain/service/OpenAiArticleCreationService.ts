@@ -46,10 +46,11 @@ export type ArticleCreationService = {
   createUnsavedArticle: CreateUnsavedArticle;
 };
 
-export const openAiArticleCreationServiceFactory = (): ArticleCreationService => ({
-  createRawArticle: createRawArticle(),
-  createUnsavedArticle: createUnsavedArticle(),
-});
+export const openAiArticleCreationServiceFactory =
+  (): ArticleCreationService => ({
+    createRawArticle: createRawArticle(),
+    createUnsavedArticle: createUnsavedArticle(),
+  });
 
 const createRawArticle =
   (): CreateRawArticle =>
@@ -85,15 +86,14 @@ const extractResponse = (
 };
 
 const cleanResponse = (
-  extractResponse: string,
+  extractResponse: string
 ): Either<CleanResponseError, string> => {
   try {
     let cleanedResponse = "";
     const items = extractResponse.split('"');
     for (const it in items) {
       if (Number(it) % 2 === 0) {
-        cleanedResponse +=
-          items[it].replaceAll("\n", "") + '"';
+        cleanedResponse += items[it].replaceAll("\n", "") + '"';
       } else {
         cleanedResponse += items[it] + '"';
       }
@@ -160,16 +160,19 @@ const mapToUnsavedArticle = (
     });
   }
   return Right({
+    type: "unsaved_article",
     content: rawArticle.content,
     title: rawArticle.title,
     formatted_content: formatContent(rawArticle.content),
     articlePrompt: rawArticle.articlePrompt,
     date: new Date(),
-    tags: rawArticle.tags,
+    tags: rawArticle.tags.map((tag) => tag.toLowerCase()),
     estimatedReadingTimeMinutes:
       typeof rawArticle.estimatedReadingTimeMinutes === "string"
         ? parseInt(rawArticle.estimatedReadingTimeMinutes)
         : rawArticle.estimatedReadingTimeMinutes,
-    relatedTopicsTags: rawArticle.relatedTopicsTags,
+    relatedTopicsTags: rawArticle.relatedTopicsTags.map((tag) =>
+      tag.toLowerCase()
+    ),
   });
 };

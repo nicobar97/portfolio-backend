@@ -46,10 +46,11 @@ export type ArticleCreationService = {
   createUnsavedArticle: CreateUnsavedArticle;
 };
 
-export const bardArticleCreationServiceFactory = (): ArticleCreationService => ({
-  createRawArticle: createRawArticle(),
-  createUnsavedArticle: createUnsavedArticle(),
-});
+export const bardArticleCreationServiceFactory =
+  (): ArticleCreationService => ({
+    createRawArticle: createRawArticle(),
+    createUnsavedArticle: createUnsavedArticle(),
+  });
 
 const createRawArticle =
   (): CreateRawArticle =>
@@ -104,7 +105,7 @@ const cleanResponse = (
     }
     cleanedResponse = cleanedResponse.slice(0, cleanedResponse.length - 1);
     cleanedResponse = cleanedResponse.replaceAll('\\"', '"');
-    
+
     // cleanedResponse = cleanAndFixJson(extractResponse);
     cleanedResponse = cleanedResponse.substring(0, cleanedResponse.length - 1);
     return Right(extractResponse);
@@ -213,6 +214,7 @@ const mapToUnsavedArticle = (
     });
   }
   return Right({
+    type: "unsaved_article",
     content: rawArticle.content,
     title: getTitle(rawArticle.content),
     formatted_content: formatContent(rawArticle.content),

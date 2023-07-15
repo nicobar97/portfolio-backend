@@ -104,6 +104,7 @@ const findMany =
 const mapMongooseArticleToArticle = (
   mongooseArticle: MongooseArticle
 ): Article => ({
+  type: "article",
   content: mongooseArticle.content,
   title: mongooseArticle.title,
   tags: mongooseArticle.tags,

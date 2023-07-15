@@ -4,8 +4,8 @@ import fastifySensible from "@fastify/sensible";
 import fastify, { FastifyBaseLogger } from "fastify";
 import { asValue } from "awilix";
 import {
-  GenerateArticleService,
-  articleGenerateServiceFactory,
+  ArticleService,
+  articleServiceFactory,
 } from "../core/application/service/ArticleGenerate";
 import { Configuration } from "../core/port/Configuration";
 import { Logger } from "..//core/port/Logger";
@@ -23,7 +23,7 @@ import fastifyCors from "@fastify/cors";
 declare module "@fastify/awilix" {
   interface Cradle {
     logger: Logger;
-    articleGenerateService: GenerateArticleService;
+    articleGenerateService: ArticleService;
   }
 }
 
@@ -62,7 +62,7 @@ const app = async (configuration: Configuration) => {
   const openAiService = openAiServiceFactory(openai);
   const articleCreationService = openAiArticleCreationServiceFactory();
   const articleRepository = mongooseArticlesRepositoryFactory(logger);
-  const articleGenerateService = articleGenerateServiceFactory(
+  const articleGenerateService = articleServiceFactory(
     articleCreationService,
     openAiService,
     articleRepository
