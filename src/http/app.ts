@@ -6,16 +6,13 @@ import { asValue } from "awilix";
 import {
   GenerateArticleService,
   articleGenerateServiceFactory,
-} from "../../src/core/application/service/ArticleGenerate";
-import { Configuration } from "../../src/core/port/Configuration";
-// import { HttpClient } from "../../src/core/port/HttpClient";
-import { Logger } from "../../src/core/port/Logger";
-// import { googleBardServiceFactory } from "../../src/adapter/service/GoogleBardService";
+} from "../core/application/service/ArticleGenerate";
+import { Configuration } from "../core/port/Configuration";
+import { Logger } from "..//core/port/Logger";
 import InvoicingController from "./controller/ArticleController";
 import mongoose from "mongoose";
-import { fastifyLogger } from "../../src/adapter/log/FastifyLogger";
-import { getLoggerConfigs } from "../../src/adapter/config/PinoFastifyConfiguration";
-// import Bard from "../adapter/service/bard";
+import { fastifyLogger } from "../adapter/log/FastifyLogger";
+import { getLoggerConfigs } from "../adapter/config/PinoFastifyConfiguration";
 import { openAiArticleCreationServiceFactory } from "../core/domain/service/OpenAiArticleCreationService";
 import { Configuration as OpenAiConfiguration, OpenAIApi } from "openai";
 import { openAiServiceFactory } from "../adapter/service/OpenAiService";

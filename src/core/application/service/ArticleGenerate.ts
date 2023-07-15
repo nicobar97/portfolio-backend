@@ -4,12 +4,12 @@ import {
   ArticlePrompt,
   RawArticle,
   UnsavedArticle,
-} from "../../../../src/core/domain/model/Article";
+} from "../../../core/domain/model/Article";
 import {
   AiServiceError,
   AskAiService,
   GenerativeAiService,
-} from "../../../../src/core/port/GenerativeAiService";
+} from "../../../core/port/GenerativeAiService";
 import {
   ArticleCreationService,
   CreateRawArticleError,

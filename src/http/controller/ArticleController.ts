@@ -11,7 +11,7 @@ import {
   Article,
   ArticlePrompt,
   UnsavedArticle,
-} from "../../../src/core/domain/model/Article";
+} from "../../core/domain/model/Article";
 import { EitherAsync } from "purify-ts";
 
 interface ArticleGenerateRequest extends FastifyRequest {

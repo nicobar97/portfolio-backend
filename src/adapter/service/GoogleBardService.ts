@@ -3,7 +3,7 @@ import {
   AiServiceError,
   AskAiService,
   GenerativeAiService,
-} from "../../../src/core/port/GenerativeAiService";
+} from "../../core/port/GenerativeAiService";
 import Bard from "./bard";
 
 export const googleBardServiceFactory = (bard: Bard): GenerativeAiService => ({
