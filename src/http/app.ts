@@ -18,6 +18,7 @@ import { Configuration as OpenAiConfiguration, OpenAIApi } from "openai";
 import { openAiServiceFactory } from "../adapter/service/OpenAiService";
 import { mongooseArticlesRepositoryFactory } from "../adapter/repository/mongoose/ArticleMongooseRepository";
 import WelcomeController from "./controller/WelcomeController";
+import fastifyCors from "@fastify/cors";
 
 declare module "@fastify/awilix" {
   interface Cradle {
@@ -38,6 +39,10 @@ const app = async (configuration: Configuration) => {
     disposeOnResponse: true,
   });
   fastifyApp.register(fastifySensible);
+  fastifyApp.register(fastifyCors, {
+    origin: ["*"],
+  });
+
   fastifyApp.register(fastifyRequestContext, {
     defaultStoreValues: {
       user: null,
