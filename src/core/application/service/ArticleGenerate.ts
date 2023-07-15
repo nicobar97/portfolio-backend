@@ -133,6 +133,7 @@ const mapArticleToSimpleArticle = (article: Article): SimpleArticle => ({
   content: getFirstParagraph(article.content),
   tags: article.tags,
   estimatedReadingTimeMinutes: article.estimatedReadingTimeMinutes,
+  date: article.date,
 });
 
 const getFirstParagraph = (content: string): string =>
