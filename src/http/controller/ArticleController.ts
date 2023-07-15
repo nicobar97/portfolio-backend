@@ -52,19 +52,8 @@ const InvoicingController: FastifyPluginAsync = async (
         })
   );
 
-  const articleHandler = async (
-    request: FastifyRequest<{
-      Params: {
-        articleId: string;
-      };
-    }>,
-    reply: FastifyReply
-  ) => {
-    const articleId = request.params.articleId;
-  };
-
   fastify.get(
-    "/:articleId",
+    "/get/:articleId",
     {
       preValidation: [],
     },
@@ -89,7 +78,7 @@ const InvoicingController: FastifyPluginAsync = async (
           logger.error(
             `[ERROR] Error on request: ${JSON.stringify(request.body)}`
           );
-          reply.code(500).send(error);
+          reply.code(400).send(error);
         })
   );
 
@@ -112,13 +101,13 @@ const InvoicingController: FastifyPluginAsync = async (
           logger.error(
             `[ERROR] Error on request: ${JSON.stringify(request.body)}`
           );
-          reply.code(500).send(error);
+          reply.code(400).send(error);
         })
   );
 };
 
 export default fp(async (app, _opts) =>
   app.register(InvoicingController, {
-    prefix: "/api/article",
+    prefix: "/api/articles",
   })
 );

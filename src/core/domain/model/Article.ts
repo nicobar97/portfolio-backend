@@ -30,7 +30,7 @@ export type SimpleArticle = {
   content: string;
   tags: string[];
   estimatedReadingTimeMinutes: number;
-  date: Date
+  date: Date;
 };
 
 export type ArticlePrompt = {
