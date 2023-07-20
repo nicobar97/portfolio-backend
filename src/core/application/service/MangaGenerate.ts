@@ -110,7 +110,7 @@ const generateMangaList =
   ): Promise<Either<GenerateMangaListError, MangaList>> =>
     mapFetch
       .fetch<string, RawMangaList>(
-        `${getDomainFromProvider(provider)}projects`,
+        `${getDomainFromProvider(provider)}/projects`,
         { method: "GET" },
         (htmlContent: string) =>
           Right(

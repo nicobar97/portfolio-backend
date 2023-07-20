@@ -107,12 +107,13 @@ const createMangaList =
     try {
       const { html, provider } = rawMangaList;
 
-      const MangaList: MangaList = {
+      const mangaList = {
+        type: "manga_list" as "manga_list",
         provider: provider,
         mangas: getSimpleMangas(rawMangaList),
       };
 
-      return Right(MangaList);
+      return Right({ ...mangaList, count: mangaList.mangas.length });
     } catch (e) {
       console.log(e);
       return Left({
@@ -131,6 +132,7 @@ const getSimpleMangas = (rawMangaList: RawMangaList) => {
   const mangas: SimpleManga[] = [];
   for (const div of divs) {
     const sp: SimpleManga = {
+      type: "simple_manga" as "simple_manga",
       title: div.querySelector("img").getAttribute("alt"),
       image: div.querySelector("img").getAttribute("src"),
       provider: rawMangaList.provider,
@@ -152,7 +154,8 @@ const createChapterList =
       const dom = new JSDOM(html);
       const document = dom.window.document;
 
-      const chapterList: ChapterList = {
+      const chapterList = {
+        type: "chapter_list" as "chapter_list",
         title:
           document
             .querySelector("head")
@@ -167,6 +170,7 @@ const createChapterList =
             if (a.innerHTML.includes("pter")) {
               const title = a.innerHTML.split(">")[1].split("<")[0].trim();
               return {
+                type: "simple_chapter" as "simple_chapter",
                 title,
                 url: a.getAttribute("href"),
                 provider: provider,
@@ -179,7 +183,7 @@ const createChapterList =
           .filter((item) => item !== null),
       };
 
-      return Right(chapterList);
+      return Right({ ...chapterList, count: chapterList.chapters.length });
     } catch (e) {
       console.log(e);
       return Left({
@@ -231,8 +235,8 @@ const createChapter =
       );
       const tags: string[] = [];
 
-      const chapter: Chapter = {
-        type: "chapter",
+      const chapter = {
+        type: "chapter" as "chapter",
         id: "some-unique-id",
         mangaId: "some-manga-id",
         title: title,
@@ -242,7 +246,7 @@ const createChapter =
         tags: tags,
       };
 
-      return Right(chapter);
+      return Right({ ...chapter, count: chapter.pages.length });
     } catch (e) {
       console.log(e);
       return Left({
@@ -259,7 +263,7 @@ const createChapterPages = (
   chapterNumber: number
 ): ChapterPage[] =>
   imagesWithTitle.map(({ image, title }, index) => ({
-    type: "chapter_page",
+    type: "chapter_page" as "chapter_page",
     id: "some-unique-id",
     mangaId: "some-manga-id",
     chapterId: "some-chapter-id",

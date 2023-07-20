@@ -17,11 +17,14 @@ export type RawMangaList = {
 };
 
 export type MangaList = {
+  type: "manga_list";
   provider: SupportedProvider;
+  count: number;
   mangas: SimpleManga[];
 };
 
 export type SimpleManga = {
+  type: "simple_manga";
   title: string;
   image: string;
   provider: SupportedProvider;
@@ -29,12 +32,15 @@ export type SimpleManga = {
 };
 
 export type ChapterList = {
+  type: "chapter_list";
   title: string;
   provider: SupportedProvider;
+  count: number;
   chapters: SimpleChapter[];
 };
 
 export type SimpleChapter = {
+  type: "simple_chapter";
   title: string;
   number: number;
   provider: SupportedProvider;
@@ -59,6 +65,7 @@ export type Chapter = {
   title: string;
   number: number;
   provider: SupportedProvider;
+  count: number;
   pages: ChapterPage[];
   tags: string[];
 };
@@ -86,9 +93,9 @@ export type SupportedProvider =
 export const getDomainFromProvider = (provider: SupportedProvider) => {
   switch (provider) {
     case SupportedProviders.TCBScans:
-      return "https://tcbscans.com/";
+      return "https://tcbscans.com";
 
     case SupportedProviders.NIFTeam:
-      return "https://nifteam.com/";
+      return "https://nifteam.com";
   }
 };
