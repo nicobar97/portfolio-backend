@@ -19,11 +19,19 @@ import { openAiServiceFactory } from "../adapter/service/OpenAiService";
 import { mongooseArticlesRepositoryFactory } from "../adapter/repository/mongoose/ArticleMongooseRepository";
 import WelcomeController from "./controller/WelcomeController";
 import fastifyCors from "@fastify/cors";
+import MangaController from "./controller/MangaController";
+import {
+  MangaGenerateService,
+  mangaGenerateServiceFactory,
+} from "../core/application/service/MangaGenerate";
+import { mapFetchFactory } from "../adapter/service/FetchMapClient";
+import { chapterCreationServiceFactory } from "../core/domain/service/MangaCreationService";
 
 declare module "@fastify/awilix" {
   interface Cradle {
     logger: Logger;
     articleGenerateService: ArticleService;
+    mangaGenerateService: MangaGenerateService;
   }
 }
 
@@ -68,11 +76,19 @@ const app = async (configuration: Configuration) => {
     articleRepository
   );
 
+  const mapFetch = mapFetchFactory();
+  const chapterCreationService = chapterCreationServiceFactory();
+  const mangaGenerateService = mangaGenerateServiceFactory(
+    mapFetch,
+    chapterCreationService
+  );
+
   diContainer.register({
     logger: asValue(logger),
     articleGenerateService: asValue(articleGenerateService),
+    mangaGenerateService: asValue(mangaGenerateService),
   });
-
+  fastifyApp.register(MangaController);
   fastifyApp.register(InvoicingController);
   fastifyApp.register(WelcomeController);
 
