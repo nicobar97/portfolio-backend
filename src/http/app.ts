@@ -48,7 +48,7 @@ const app = async (configuration: Configuration) => {
   });
   fastifyApp.register(fastifySensible);
   fastifyApp.register(fastifyCors, {
-    origin: ["*"],
+    origin: ["https://nicobar.vercel.app/*"],
   });
 
   fastifyApp.register(fastifyRequestContext, {

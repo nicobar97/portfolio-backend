@@ -88,7 +88,6 @@ export const SupportedProviders = {
 } as const;
 export type SupportedProvider =
   (typeof SupportedProviders)[keyof typeof SupportedProviders];
-//   RawManga<typeof SupportedProviders.TCBScans>;
 
 export const getDomainFromProvider = (provider: SupportedProvider) => {
   switch (provider) {
