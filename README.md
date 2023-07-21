@@ -27,7 +27,17 @@ yarn install
 
 ## Starting the Backend
 
-After installing the dependencies, you can start the backend server using the following command:
+After installing the dependencies, create a .env file in this format, on the project root:
+```
+PORT=3000
+ENVIRONMENT=development
+GOOGLE_BARD_COOKIES=
+OPENAI_API_KEY=
+OPENAI_API_ORGANIZATION=
+DATABASE_CONNECTION_STRING=
+```
+
+After this, you can start the backend server using the following command:
 
 ```bash
 yarn dev
