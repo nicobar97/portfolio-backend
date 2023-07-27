@@ -20,7 +20,7 @@ interface ArticleGenerateRequest extends FastifyRequest {
   Body: ArticlePrompt;
 }
 
-const InvoicingController: FastifyPluginAsync = async (
+const ArticleController: FastifyPluginAsync = async (
   fastify: FastifyInstance,
   _options: FastifyPluginOptions
 ) => {
@@ -107,7 +107,7 @@ const InvoicingController: FastifyPluginAsync = async (
 };
 
 export default fp(async (app, _opts) =>
-  app.register(InvoicingController, {
+  app.register(ArticleController, {
     prefix: "/api/articles",
   })
 );

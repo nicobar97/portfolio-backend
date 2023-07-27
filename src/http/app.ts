@@ -9,7 +9,6 @@ import {
 } from "../core/application/service/ArticleGenerate";
 import { Configuration } from "../core/port/Configuration";
 import { Logger } from "..//core/port/Logger";
-import InvoicingController from "./controller/ArticleController";
 import mongoose from "mongoose";
 import { fastifyLogger } from "../adapter/log/FastifyLogger";
 import { getLoggerConfigs } from "../adapter/config/PinoFastifyConfiguration";
@@ -26,6 +25,7 @@ import {
 } from "../core/application/service/MangaGenerate";
 import { mapFetchFactory } from "../adapter/service/FetchMapClient";
 import { chapterCreationServiceFactory } from "../core/domain/service/MangaCreationService";
+import ArticleController from "./controller/ArticleController";
 
 declare module "@fastify/awilix" {
   interface Cradle {
@@ -89,7 +89,7 @@ const app = async (configuration: Configuration) => {
     mangaGenerateService: asValue(mangaGenerateService),
   });
   fastifyApp.register(MangaController);
-  fastifyApp.register(InvoicingController);
+  fastifyApp.register(ArticleController);
   fastifyApp.register(WelcomeController);
 
   return fastifyApp;
