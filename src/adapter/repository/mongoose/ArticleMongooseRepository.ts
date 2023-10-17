@@ -5,7 +5,7 @@ import {
   MongooseArticleData,
 } from "./ArticleMongooseSchema";
 import { Article, UnsavedArticle } from "../../../core/domain/model/Article";
-import { Either, Left, Right } from "purify-ts";
+import { Either, EitherAsync, Left, Right } from "purify-ts";
 import {
   FindArticleByIdError,
   FindArticleById,
@@ -30,50 +30,46 @@ const create =
   (
     unsavedArticle: UnsavedArticle
   ): Promise<Either<CreateArticleError, Article>> =>
-    ArticlesMongooseModel.create(
-      mapUnsavedArticleToMongooseArticle(unsavedArticle)
+    EitherAsync.liftEither<Error, MongooseArticleData>(
+      Either.encase(() => mapUnsavedArticleToMongooseArticle(unsavedArticle))
     )
-      .then((article) =>
-        Right(article).map((article) => mapMongooseArticleToArticle(article))
+      .chain((mongooseArticleData: MongooseArticleData) =>
+        EitherAsync<Error, MongooseArticle>(() =>
+          ArticlesMongooseModel.create(mongooseArticleData)
+        )
       )
-      .catch(
-        (error: Error): Either<CreateArticleError, Article> =>
-          Left({
+      .map((mongooseArticle: MongooseArticle) =>
+        mapMongooseArticleToArticle(mongooseArticle)
+      )
+      .mapLeft(
+        (error) =>
+          ({
             type: "createArticleError",
             message:
               error.message ||
               `An error occurred while creating article ${JSON.stringify(
                 unsavedArticle
               )}.`,
-          })
-      );
+          } as CreateArticleError)
+      )
+      .run();
 
 const findById =
   (logger: Logger) =>
   (id: string): Promise<Either<FindArticleByIdError, Article>> =>
-    ArticlesMongooseModel.findById(id)
-      .exec()
-      .then(
-        (
-          mongooseArticle: MongooseArticle | null
-        ): Either<FindArticleByIdError, Article> =>
-          mongooseArticle === null
-            ? Left({
-                type: "findArticleByIdError",
-                message: `Article with id ${id} not found.`,
-              })
-            : Right(mongooseArticle).map((article) =>
-                mapMongooseArticleToArticle(article)
-              )
-      )
-      .catch(
-        (error: Error): Either<FindArticleByIdError, Article> =>
-          Left({
+    EitherAsync<Error, MongooseArticle>(() =>
+      ArticlesMongooseModel.findById(id).exec()
+    )
+      .map((mongooseArticle) => mapMongooseArticleToArticle(mongooseArticle))
+      .mapLeft(
+        (error) =>
+          ({
             type: "findArticleByIdError",
             message:
               error.message || `An error occurred while reading with id ${id}.`,
-          })
-      );
+          } as FindArticleByIdError)
+      )
+      .run();
 
 const findMany =
   (logger: Logger) => (): Promise<Either<FindManyArticlesError, Article[]>> =>

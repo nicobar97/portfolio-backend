@@ -17,7 +17,7 @@ import { Configuration as OpenAiConfiguration, OpenAIApi } from "openai";
 import { openAiServiceFactory } from "../adapter/service/OpenAiService";
 import { mongooseArticlesRepositoryFactory } from "../adapter/repository/mongoose/ArticleMongooseRepository";
 import WelcomeController from "./controller/WelcomeController";
-import fastifyCors from "@fastify/cors";
+// import fastifyCors from "@fastify/cors";
 import MangaController from "./controller/MangaController";
 import {
   MangaGenerateService,
@@ -26,12 +26,20 @@ import {
 import { mapFetchFactory } from "../adapter/service/FetchMapClient";
 import { chapterCreationServiceFactory } from "../core/domain/service/MangaCreationService";
 import ArticleController from "./controller/ArticleController";
+import GameCardController from "./controller/GameCardController";
+import {
+  GameCardService,
+  gameCardServiceFactory,
+} from "../core/application/service/GameCardService";
+import { mongooseGameCardsRepositoryFactory } from "../adapter/repository/mongoose/CardGameMongooseRepository";
+import fastifyCors from "@fastify/cors";
 
 declare module "@fastify/awilix" {
   interface Cradle {
     logger: Logger;
     articleGenerateService: ArticleService;
     mangaGenerateService: MangaGenerateService;
+    gameCardService: GameCardService;
   }
 }
 
@@ -47,9 +55,12 @@ const app = async (configuration: Configuration) => {
     disposeOnResponse: true,
   });
   fastifyApp.register(fastifySensible);
-  fastifyApp.register(fastifyCors, {
-    origin: "https://nicobar.vercel.app",
-  });
+
+  if (configuration.server.environment === "production") {
+    fastifyApp.register(fastifyCors, {
+      origin: "https://nicobar.vercel.app",
+    });
+  }
 
   fastifyApp.register(fastifyRequestContext, {
     defaultStoreValues: {
@@ -58,9 +69,6 @@ const app = async (configuration: Configuration) => {
   });
 
   const logger: Logger = fastifyLogger(fastifyApp.log);
-
-  // const bard = new Bard(configuration.secrets.googleBardCookies);
-  // const googleBardGateway = googleBardServiceFactory(bard);
 
   const openAiConfig = new OpenAiConfiguration({
     apiKey: configuration.secrets.openAiKey,
@@ -83,13 +91,18 @@ const app = async (configuration: Configuration) => {
     chapterCreationService
   );
 
+  const gameCardRepository = mongooseGameCardsRepositoryFactory(logger);
+  const gameCardService = gameCardServiceFactory(gameCardRepository);
+
   diContainer.register({
     logger: asValue(logger),
     articleGenerateService: asValue(articleGenerateService),
     mangaGenerateService: asValue(mangaGenerateService),
+    gameCardService: asValue(gameCardService),
   });
   fastifyApp.register(MangaController);
   fastifyApp.register(ArticleController);
+  fastifyApp.register(GameCardController);
   fastifyApp.register(WelcomeController);
 
   return fastifyApp;
