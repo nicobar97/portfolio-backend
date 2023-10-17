@@ -17,7 +17,6 @@ import { Configuration as OpenAiConfiguration, OpenAIApi } from "openai";
 import { openAiServiceFactory } from "../adapter/service/OpenAiService";
 import { mongooseArticlesRepositoryFactory } from "../adapter/repository/mongoose/ArticleMongooseRepository";
 import WelcomeController from "./controller/WelcomeController";
-// import fastifyCors from "@fastify/cors";
 import MangaController from "./controller/MangaController";
 import {
   MangaGenerateService,
@@ -32,7 +31,7 @@ import {
   gameCardServiceFactory,
 } from "../core/application/service/GameCardService";
 import { mongooseGameCardsRepositoryFactory } from "../adapter/repository/mongoose/CardGameMongooseRepository";
-// import fastifyCors from "@fastify/cors";
+import fastifyCors from "@fastify/cors";
 
 declare module "@fastify/awilix" {
   interface Cradle {
@@ -56,17 +55,9 @@ const app = async (configuration: Configuration) => {
   });
   fastifyApp.register(fastifySensible);
 
-  // if (configuration.server.environment === "production") {
-  //   fastifyApp.register(fastifyCors, {
-  //     origin: "https://nicobar.vercel.app",
-  //   });
-  // }
-
-  // fastifyApp.register(fastifyRequestContext, {
-  //   defaultStoreValues: {
-  //     user: null,
-  //   },
-  // });
+  fastifyApp.register(fastifyCors, {
+    origin: "https://nicobar.vercel.app",
+  });
 
   const logger: Logger = fastifyLogger(fastifyApp.log);
 
