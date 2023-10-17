@@ -56,11 +56,11 @@ const app = async (configuration: Configuration) => {
   });
   fastifyApp.register(fastifySensible);
 
-  if (configuration.server.environment === "production") {
-    fastifyApp.register(fastifyCors, {
-      origin: "https://nicobar.vercel.app",
-    });
-  }
+  // if (configuration.server.environment === "production") {
+  //   fastifyApp.register(fastifyCors, {
+  //     origin: "https://nicobar.vercel.app",
+  //   });
+  // }
 
   fastifyApp.register(fastifyRequestContext, {
     defaultStoreValues: {

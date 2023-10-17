@@ -21,7 +21,6 @@ export type GameCard = {
 
 export type UnsavedGameCard = Omit<GameCard, "id">;
 
-//  {'LEADER', 'CHARACTER', 'EVENT', 'STAGE'}
 export const GameCardType = {
   LEADER: "LEADER",
   CHARACTER: "CHARACTER",
