@@ -32,7 +32,7 @@ import {
   gameCardServiceFactory,
 } from "../core/application/service/GameCardService";
 import { mongooseGameCardsRepositoryFactory } from "../adapter/repository/mongoose/CardGameMongooseRepository";
-import fastifyCors from "@fastify/cors";
+// import fastifyCors from "@fastify/cors";
 
 declare module "@fastify/awilix" {
   interface Cradle {
@@ -62,11 +62,11 @@ const app = async (configuration: Configuration) => {
   //   });
   // }
 
-  fastifyApp.register(fastifyRequestContext, {
-    defaultStoreValues: {
-      user: null,
-    },
-  });
+  // fastifyApp.register(fastifyRequestContext, {
+  //   defaultStoreValues: {
+  //     user: null,
+  //   },
+  // });
 
   const logger: Logger = fastifyLogger(fastifyApp.log);
 
