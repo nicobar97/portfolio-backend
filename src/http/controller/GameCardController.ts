@@ -7,8 +7,14 @@ import {
   GameCardService,
   GetGameCardsError,
   GetGameCardError,
+  GameCardFilters,
 } from "../../core/application/service/GameCardService";
-import { GameCard } from "../../core/domain/model/GameCard";
+import {
+  GameCard,
+  GameCardColorEnum,
+  GameCardRarityEnum,
+  GameCardSetEnum,
+} from "../../core/domain/model/GameCard";
 import { Logger } from "../../core/port/Logger";
 
 const GameCardController: FastifyPluginAsync = async (
@@ -24,9 +30,14 @@ const GameCardController: FastifyPluginAsync = async (
     {
       preValidation: [],
     },
-    async (request, reply) =>
+    async (
+      request: FastifyRequest<{
+        Querystring: GameCardFilters;
+      }>,
+      reply
+    ) =>
       EitherAsync.fromPromise<GetGameCardsError, GameCard[]>(() =>
-        handler.getManyGameCards()
+        handler.getGameCards(request.query)
       )
         .map((gameCards: GameCard[]) => {
           logger.debug(
@@ -38,7 +49,7 @@ const GameCardController: FastifyPluginAsync = async (
           logger.error(
             `[ERROR] Error on request: ${JSON.stringify(request.body)}`
           );
-          reply.code(500).send(error);
+          reply.code(400).send(error);
         })
   );
 

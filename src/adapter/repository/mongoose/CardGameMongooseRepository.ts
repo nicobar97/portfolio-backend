@@ -10,6 +10,7 @@ import {
   GameCardMongooseModel,
   MongooseGameCard,
 } from "./CardGameMongooseSchema";
+import { GameCardFilters } from "../../../core/application/service/GameCardService";
 
 export const mongooseGameCardsRepositoryFactory = (
   logger: Logger
@@ -38,8 +39,11 @@ const findById =
       .run();
 
 const findMany =
-  (logger: Logger) => (): Promise<Either<FindManyGameCardsError, GameCard[]>> =>
-    GameCardMongooseModel.find()
+  (logger: Logger) =>
+  (
+    filters: GameCardFilters
+  ): Promise<Either<FindManyGameCardsError, GameCard[]>> =>
+    GameCardMongooseModel.find(getGameCardsFilters(filters))
       .exec()
       .then(
         (
@@ -90,3 +94,53 @@ const mapManyMongooseGameCardsToGameCards = (
     (mongooseGameCard: MongooseGameCard): GameCard =>
       mapMongooseGameCardToGameCard(mongooseGameCard)
   );
+
+const getGameCardsFilters = (filters?: GameCardFilters) => {
+  const mongoFilters: { [key: string]: unknown } = {};
+
+  if (filters.keyword) {
+    mongoFilters["name"] = { $regex: filters.keyword, $options: "i" };
+  }
+
+  if (filters.types) {
+    mongoFilters["type"] = {
+      $in: filters.types.split(",").map((type) => type.trim()),
+    };
+  }
+
+  if (filters.sets) {
+    const regexArray = filters.sets
+      .split(",")
+      .map((set) => new RegExp(set.trim(), "i"));
+
+    mongoFilters["set"] = {
+      $in: regexArray,
+    };
+  }
+
+  if (filters.rarities) {
+    mongoFilters["rarity"] = {
+      $in: filters.rarities.split(",").map((type) => type.trim()),
+    };
+  }
+
+  if (filters.features) {
+    mongoFilters["feature"] = {
+      $in: filters.features.split(",").map((type) => type.trim()),
+    };
+  }
+
+  if (filters.colors) {
+    mongoFilters["color"] = {
+      $in: filters.colors.split(",").map((type) => type.trim()),
+    };
+  }
+
+  if (filters.attributes) {
+    mongoFilters["attributes"] = {
+      $in: filters.attributes.split(",").map((type) => type.trim()),
+    };
+  }
+
+  return mongoFilters;
+};

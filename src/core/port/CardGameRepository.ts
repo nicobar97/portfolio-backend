@@ -1,8 +1,8 @@
 import { Either } from "purify-ts";
 import { GameCard, UnsavedGameCard } from "../domain/model/GameCard";
+import { GameCardFilters } from "../application/service/GameCardService";
 
 export type GameCardRepository = {
-  // create: CreateGameCard;
   findById: FindGameCardById;
   findMany: FindManyGameCards;
 };
@@ -25,7 +25,7 @@ export type FindGameCardByIdError = {
   message: string;
 };
 
-export type FindManyGameCards = () => Promise<
+export type FindManyGameCards = (filters: GameCardFilters) => Promise<
   Either<FindManyGameCardsError, GameCard[]>
 >;
 

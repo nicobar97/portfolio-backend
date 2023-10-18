@@ -6,37 +6,46 @@ import {
   GameCardRepository,
 } from "../../port/CardGameRepository";
 
-export type Reponse = { content: string };
+export type GameCardFilters = {
+  keyword?: string;
+  types?: string;
+  sets?: string;
+  rarities?: string;
+  features?: string;
+  colors?: string;
+  attributes?: string;
+};
 
 export type GetGameCardsError = FindManyGameCardsError;
 export type GetGameCardError = FindGameCardByIdError;
 
-export type GetManysGameCards = () => Promise<
-  Either<GetGameCardsError, GameCard[]>
->;
+export type GetGameCards = (
+  filters?: GameCardFilters
+) => Promise<Either<GetGameCardsError, GameCard[]>>;
 
 export type GetGameCard = (
   id: string
 ) => Promise<Either<GetGameCardError, GameCard>>;
 
 export type GameCardService = {
-  getManyGameCards: GetManysGameCards;
+  getGameCards: GetGameCards;
   getGameCard: GetGameCard;
 };
 
 export const gameCardServiceFactory = (
   gameCardRepository: GameCardRepository
 ): GameCardService => ({
-  getManyGameCards: getManyGameCards(gameCardRepository),
+  getGameCards: getManyGameCards(gameCardRepository),
   getGameCard: getGameCard(gameCardRepository),
 });
 
 const getManyGameCards =
-  (gameCardRepository: GameCardRepository) =>
-  async (): Promise<Either<GetGameCardsError, GameCard[]>> =>
+  (gameCardRepository: GameCardRepository): GetGameCards =>
+  async (filters?: GameCardFilters): Promise<Either<GetGameCardsError, GameCard[]>> =>
     EitherAsync.fromPromise<GetGameCardsError, GameCard[]>(() =>
-      gameCardRepository.findMany()
+      gameCardRepository.findMany(filters)
     );
+
 const getGameCard =
   (gameCardRepository: GameCardRepository) =>
   async (id: string): Promise<Either<GetGameCardError, GameCard>> =>
