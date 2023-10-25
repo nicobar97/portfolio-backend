@@ -32,6 +32,11 @@ import {
 } from "../core/application/service/GameCardService";
 import { mongooseGameCardsRepositoryFactory } from "../adapter/repository/mongoose/CardGameMongooseRepository";
 import fastifyCors from "@fastify/cors";
+import {
+  TrainTablesGateway,
+  trainTableGatewayFactory,
+} from "../adapter/gateway/TrainTablesGateway";
+import TrainTableController from "./controller/TrainTableController";
 
 declare module "@fastify/awilix" {
   interface Cradle {
@@ -39,6 +44,7 @@ declare module "@fastify/awilix" {
     articleGenerateService: ArticleService;
     mangaGenerateService: MangaGenerateService;
     gameCardService: GameCardService;
+    trainTableGateway: TrainTablesGateway;
   }
 }
 
@@ -85,16 +91,21 @@ const app = async (configuration: Configuration) => {
   const gameCardRepository = mongooseGameCardsRepositoryFactory(logger);
   const gameCardService = gameCardServiceFactory(gameCardRepository);
 
+  const trainTableGateway: TrainTablesGateway =
+    trainTableGatewayFactory(mapFetch);
+
   diContainer.register({
     logger: asValue(logger),
     articleGenerateService: asValue(articleGenerateService),
     mangaGenerateService: asValue(mangaGenerateService),
     gameCardService: asValue(gameCardService),
+    trainTableGateway: asValue(trainTableGateway),
   });
   fastifyApp.register(MangaController);
   fastifyApp.register(ArticleController);
   fastifyApp.register(GameCardController);
   fastifyApp.register(WelcomeController);
+  fastifyApp.register(TrainTableController);
 
   return fastifyApp;
 };
