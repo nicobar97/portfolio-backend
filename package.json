@@ -10,6 +10,9 @@
 	},
 	"author": "Nicobar",
 	"license": "MIT",
+	"engines": {
+		"node": "19.4.0"
+	},
 	"devDependencies": {
 		"@types/jsdom": "^21.1.1",
 		"@types/node": "18.11.18",
