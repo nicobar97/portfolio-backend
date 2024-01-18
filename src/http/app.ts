@@ -17,33 +17,19 @@ import { Configuration as OpenAiConfiguration, OpenAIApi } from "openai";
 import { openAiServiceFactory } from "../adapter/service/OpenAiService";
 import { mongooseArticlesRepositoryFactory } from "../adapter/repository/mongoose/ArticleMongooseRepository";
 import WelcomeController from "./controller/WelcomeController";
-import MangaController from "./controller/MangaController";
-import {
-  MangaGenerateService,
-  mangaGenerateServiceFactory,
-} from "../core/application/service/MangaGenerate";
-import { mapFetchFactory } from "../adapter/service/FetchMapClient";
-import { chapterCreationServiceFactory } from "../core/domain/service/MangaCreationService";
-import ArticleController from "./controller/ArticleController";
-import GameCardController from "./controller/GameCardController";
-import {
-  GameCardService,
-  gameCardServiceFactory,
-} from "../core/application/service/GameCardService";
-import { mongooseGameCardsRepositoryFactory } from "../adapter/repository/mongoose/CardGameMongooseRepository";
 import fastifyCors from "@fastify/cors";
 import {
   TrainTablesGateway,
   trainTableGatewayFactory,
 } from "../adapter/gateway/TrainTablesGateway";
 import TrainTableController from "./controller/TrainTableController";
+import { mapFetchFactory } from "../adapter/service/FetchMapClient";
+import ArticleController from "./controller/ArticleController";
 
 declare module "@fastify/awilix" {
   interface Cradle {
     logger: Logger;
     articleGenerateService: ArticleService;
-    mangaGenerateService: MangaGenerateService;
-    gameCardService: GameCardService;
     trainTableGateway: TrainTablesGateway;
   }
 }
@@ -82,14 +68,6 @@ const app = async (configuration: Configuration) => {
   );
 
   const mapFetch = mapFetchFactory();
-  const chapterCreationService = chapterCreationServiceFactory();
-  const mangaGenerateService = mangaGenerateServiceFactory(
-    mapFetch,
-    chapterCreationService
-  );
-
-  const gameCardRepository = mongooseGameCardsRepositoryFactory(logger);
-  const gameCardService = gameCardServiceFactory(gameCardRepository);
 
   const trainTableGateway: TrainTablesGateway =
     trainTableGatewayFactory(mapFetch);
@@ -97,13 +75,10 @@ const app = async (configuration: Configuration) => {
   diContainer.register({
     logger: asValue(logger),
     articleGenerateService: asValue(articleGenerateService),
-    mangaGenerateService: asValue(mangaGenerateService),
-    gameCardService: asValue(gameCardService),
     trainTableGateway: asValue(trainTableGateway),
   });
-  fastifyApp.register(MangaController);
+
   fastifyApp.register(ArticleController);
-  fastifyApp.register(GameCardController);
   fastifyApp.register(WelcomeController);
   fastifyApp.register(TrainTableController);
 
