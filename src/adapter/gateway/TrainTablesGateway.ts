@@ -53,23 +53,35 @@ const generateTrainTableList = (
         .querySelector("td[id=RVettore] img")
         .getAttribute("alt")
         .toLowerCase();
-      const category = row
-        .querySelector("td[id=RCategoria] img")
-        .getAttribute("alt").replace("Categoria", "").trim();
+      const category =
+        row
+          ?.querySelector("td[id=RCategoria] img")
+          ?.getAttribute("alt")
+          ?.replace("Categoria", "")
+          .trim() ?? "RE";
       const destination = row
         .querySelector("td[id=RStazione] div")
         .textContent.trim();
       const departureTime = row
         .querySelector("td[id=ROrario]")
         .textContent.trim();
-      const delay =
-        Number(row.querySelector("td[id=RRitardo]").textContent.trim()) || 0;
+      let delay = null;
+      if (
+        row.querySelector("td[id=RRitardo]").textContent.trim() === "Cancelled"
+      ) {
+        delay = -666;
+      } else {
+        delay =
+          Number(row.querySelector("td[id=RRitardo]").textContent.trim()) || 0;
+      }
       const binary = row
         .querySelector("td[id=RBinario] div")
         .textContent.trim();
       const isDepartingImg = row.querySelector("td[id=RExLampeggio] img");
       const isDeparting =
-        isDepartingImg && isDepartingImg.getAttribute("alt") === "Si" ? true : false;
+        isDepartingImg && isDepartingImg.getAttribute("alt") === "Si"
+          ? true
+          : false;
 
       const trainDetails: TrainDetails = {
         trainId,
